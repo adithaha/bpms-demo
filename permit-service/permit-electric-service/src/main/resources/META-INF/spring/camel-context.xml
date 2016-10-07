@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:cxf="http://camel.apache.org/schema/cxf"
+	xmlns:task="http://www.springframework.org/schema/task"
+	    xsi:schemaLocation="
+  	http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+  	http://camel.apache.org/schema/spring 
+    http://camel.apache.org/schema/spring/camel-spring.xsd
+    http://camel.apache.org/schema/cxf
+    http://camel.apache.org/schema/cxf/camel-cxf.xsd
+    http://www.springframework.org/schema/task 
+    http://www.springframework.org/schema/task/spring-task-3.0.xsd ">
+    
+
+	<bean id="processor" class="com.redhat.nugraha.demo.bpms.permit.electric.service.Processor" />
+	
+
+	<cxf:cxfEndpoint id="electricWS"
+                   address="http://localhost:9090/electricservice"
+                   serviceClass="com.redhat.nugraha.demo.bpms.permit.electric.service.ServiceWS"/>
+  
+  
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+  <route>
+    <from uri="cxf:bean:electricWS"/>
+    <convertBodyTo type="com.redhat.nugraha.demo.bpms.permit.model.electric.ElectricRequest"/>
+    <recipientList>
+      <simple>direct:${header.operationName}</simple>
+    </recipientList>
+  </route>
+  <route id="register">
+    <from uri="direct:register"/>
+    <choice>
+      <when>
+        <simple>${body.power} &lt;= 1000</simple>
+        <setProperty propertyName="BPMS_status">
+          <constant>APPROVED</constant>
+        </setProperty>
+      </when>
+      <otherwise>
+        <setProperty propertyName="BPMS_status">
+          <constant>DENIED</constant>
+        </setProperty>
+      </otherwise>
+    </choice>
+    <log message="[register] request [${body.name}] [${body.address}] [${body.power}] is ${property.BPMS_status}"/>
+    <bean ref="processor" method="generateResponse"/>
+  </route>
+  <route id="getStatus">
+    <from uri="direct:getStatus"/>
+    <choice>
+      <when>
+        <simple>${body.power} &lt;= 1000</simple>
+        <setProperty propertyName="BPMS_status">
+          <constant>APPROVED</constant>
+        </setProperty>
+      </when>
+      <otherwise>
+        <setProperty propertyName="BPMS_status">
+          <constant>DENIED</constant>
+        </setProperty>
+      </otherwise>
+    </choice>
+    <log message="[getStatus] request [${body.name}] [${body.address}] [${body.power}] is ${property.BPMS_status}"/>
+    <bean ref="processor" method="generateResponse"/>
+  </route>
+</camelContext>
+		
+</beans>

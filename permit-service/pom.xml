@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.redhat.anugraha.demo.bpms</groupId>
+  <artifactId>permit-service</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <name>DEMO :: Permit Web Services</name>
+  <properties>
+    <jboss.fuse.bom.version>6.2.1.redhat-084</jboss.fuse.bom.version>
+    <maven-resources-plugin.version>2.4.3</maven-resources-plugin.version>
+    <org.apache.camel.version>2.15.1.redhat-621084</org.apache.camel.version>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <org.apache.felix.maven-bundle-plugin.version>2.3.7</org.apache.felix.maven-bundle-plugin.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.fuse.bom</groupId>
+        <artifactId>jboss-fuse-parent</artifactId>
+        <version>${jboss.fuse.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>permit-electric-service</module>
+    <module>permit-data-model</module>
+    <!-- module>permit-structural-service</module-->
+  </modules>
+</project>
